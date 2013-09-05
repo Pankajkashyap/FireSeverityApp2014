@@ -29,6 +29,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.fireseverityapp.MainActivity" />
         </activity>
+        <activity
+            android:name="com.fireseverityapp.GPSLocationCapture"
+            android:label="@string/title_activity_gpslocation_capture" >
+        </activity>
     </application>
+    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
