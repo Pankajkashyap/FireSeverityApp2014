@@ -7,5 +7,14 @@
     <string name="title_activity_welcompage">Welcom To Fire Severity Level App</string>
     <string name="welcome_button_start">Start</string>
     <string name="title_activity_gpslocation_capture">GPS Location Tracking</string>
+    
+    <string name="fire_severity_att_sel">Choose an Attribute</string>
+    <string name="fire_severity_att_name">Fire Severity Attribute:</string>
+    <string-array name="fs_attribute_arrays">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Extremely High</item>
+    </string-array>
 
 </resources>

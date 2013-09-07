@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,11 +23,10 @@ public class GPSLocationCapture extends Service implements LocationListener {
     boolean isNetworkEnabled = false;
     boolean isLocationAvailable = false;
     
-    String provider = "none";
- 
     double latitude;
     double longitude;
  
+    private String provider;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
  
@@ -41,8 +41,18 @@ public class GPSLocationCapture extends Service implements LocationListener {
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext
-            		.getSystemService(LOCATION_SERVICE);
+            		.getSystemService(Context.LOCATION_SERVICE);
+            
+            Criteria criteria = new Criteria();
+            criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+            provider = locationManager.getBestProvider(criteria, false);
+            location = locationManager.getLastKnownLocation(provider);
+            
+            if(location != null){
+            	 this.isLocationAvailable = true;
+            }
  
+            /*
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
  
@@ -84,6 +94,7 @@ public class GPSLocationCapture extends Service implements LocationListener {
                     }
                 }
             }
+            */
  
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +103,7 @@ public class GPSLocationCapture extends Service implements LocationListener {
         return location;
     }
         
-    //Ask User to setting GPS
+    //Ask User to set up GPS
     public void showSettingsAlert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
       
