@@ -4,13 +4,25 @@ import com.fireseverityapp.MainActivity;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
 public class Welcompage extends Activity {
+	
+	
+	private SharedPreferences mSettings;
+
+	TextView userNameField;
+	TextView userEmailField;
+	Button btnClear;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +30,17 @@ public class Welcompage extends Activity {
 		setContentView(R.layout.activity_welcompage);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		
+		userNameField = (TextView)this.findViewById(R.id.userField);
+		userEmailField = (TextView)this.findViewById(R.id.userEmailField);
+		
+		boolean isExist = isUserExist();
+		// If User First Login
+		if(!isExist){
+			Intent i = new Intent(this,RegisterActivity.class);
+			this.startActivity(i);
+		}
+		
 	}
 
 	/**
@@ -27,6 +50,22 @@ public class Welcompage extends Activity {
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
+	}
+	
+	private boolean isUserExist(){
+		boolean checked = false;
+		
+		Context mContext = this.getApplicationContext();
+		
+		mSettings = mContext.getSharedPreferences(RegisterActivity.PREF_NAME, Context.MODE_PRIVATE);
+		String storeName = mSettings.getString(RegisterActivity.USER_NAME, null);
+		if(storeName!=null){
+			userNameField.setText(mSettings.getString(RegisterActivity.USER_NAME, null));
+			userEmailField.setText(mSettings.getString(RegisterActivity.USER_EMAIL, null));
+			checked = true;
+		}
+		
+		return checked;
 	}
 
 	@Override
@@ -56,6 +95,17 @@ public class Welcompage extends Activity {
 	public void enterApp(View v){
 		Intent i = new Intent(this,MainActivity.class);
 		this.startActivity(i);
+	}
+	
+	public void clearUser(View v){
+		Editor preEditor = mSettings.edit();
+		preEditor.remove(RegisterActivity.USER_NAME);
+		preEditor.remove(RegisterActivity.USER_EMAIL);
+		preEditor.clear();
+		preEditor.commit();
+		
+		String testing = mSettings.getString(RegisterActivity.USER_NAME, null);
+		System.out.println("Testing Name========>"+testing);
 	}
 
 

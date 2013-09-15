@@ -12,8 +12,8 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
+        android:text="Hello!" />
+    
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
@@ -23,6 +23,43 @@
         android:layout_marginLeft="18dp"
         android:layout_marginTop="123dp"
         android:onClick="enterApp"
-        android:text="@string/welcome_button_start" />
+        android:text="@string/btn_start" />
+
+    <TextView
+        android:id="@+id/userField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_marginLeft="21dp"
+        android:layout_toRightOf="@+id/textView1"
+        android:text="User Name" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="18dp"
+        android:text="Your Email:" />
+
+    <TextView
+        android:id="@+id/userEmailField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_toRightOf="@+id/button1"
+        android:text="Email Address" />
+
+    <Button
+        android:id="@+id/clearUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="55dp"
+        android:layout_toRightOf="@+id/userEmailField"
+        android:onClick="clearUser"
+        android:text="Clear User Info" />
 
 </RelativeLayout>

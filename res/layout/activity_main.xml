@@ -31,7 +31,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/spinnerFSA"
         android:layout_marginBottom="20dp"
-        android:text="@string/welcome_button_start" />
+        android:text="@string/btn_start" />
     
     <ImageView
         android:id="@+id/imageViewPhotoShot"

@@ -42,11 +42,12 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				getLocation();
+				
 			}
 		});
 		
 		startCamera();
-		listenerOnSpinner();
+		
 	}
 	
 	public void listenerOnSpinner(){
@@ -79,6 +80,22 @@ public class MainActivity extends Activity {
 		}
 		
 	}
+	
+	public void sendEmail(){
+		
+		Intent mailIntent = new Intent(Intent.ACTION_SEND);
+			mailIntent.setType("message/rfc822");
+			mailIntent.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
+			mailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
+			mailIntent.putExtra(Intent.EXTRA_TEXT   , "body of email");
+		
+		try {
+		    startActivity(Intent.createChooser(mailIntent, "Choose an Email client :"));
+		} catch (android.content.ActivityNotFoundException ex) {
+		    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,6 +110,7 @@ public class MainActivity extends Activity {
 			Bitmap pic = (Bitmap)data.getExtras().get("data");
 			imgPhoto.setImageBitmap(pic);
 			getLocation();
+			listenerOnSpinner();
 		}
 		if(resCode == Activity.RESULT_CANCELED){
 			Intent errPage = new Intent(this, ErrorPage.class);
