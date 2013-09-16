@@ -3,11 +3,15 @@ package com.fireseverityapp;
 import com.fireseverityapp.R;
 import android.graphics.Bitmap;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.NavUtils;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,9 +22,14 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	
 	final int CAM_RESULT = 333333;
+	
+	private SharedPreferences mSettings;
 
 	//ErrorCode
 	String camCanceled = "CAM_CANCELED";
+	
+	String userNameValue = null;
+	String userEmailValue = null;
 
 	TextView latitude;
 	TextView longitude;
@@ -81,22 +90,23 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	public void sendEmail(){
-		
-		Intent mailIntent = new Intent(Intent.ACTION_SEND);
-			mailIntent.setType("message/rfc822");
-			mailIntent.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
-			mailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-			mailIntent.putExtra(Intent.EXTRA_TEXT   , "body of email");
-		
-		try {
-		    startActivity(Intent.createChooser(mailIntent, "Choose an Email client :"));
-		} catch (android.content.ActivityNotFoundException ex) {
-		    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
 		}
-		
+		return super.onOptionsItemSelected(item);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -118,5 +128,27 @@ public class MainActivity extends Activity {
 			this.startActivity(errPage);
 		}
 	}
+	
+	public void sendEmail(){
+		
+		mSettings = this.getSharedPreferences(RegisterActivity.PREF_NAME, MODE_PRIVATE);
+		
+		userNameValue = mSettings.getString(RegisterActivity.USER_NAME, null);
+		userEmailValue = mSettings.getString(RegisterActivity.USER_EMAIL, null);
+		
+		Intent mailIntent = new Intent(Intent.ACTION_SEND);
+			mailIntent.setType("application/image");
+			mailIntent.putExtra(Intent.EXTRA_EMAIL  , new String[]{"snowneco@gmail.com"});
+			mailIntent.putExtra(Intent.EXTRA_SUBJECT, "Fire Severity Level App");
+			mailIntent.putExtra(Intent.EXTRA_TEXT   , "Bush Fire reporter, /n Latitude:"+ latitude + "/n Longitude:"+ longitude);
+		
+		try {
+		    startActivity(Intent.createChooser(mailIntent, "Choose an Email client :"));
+		} catch (android.content.ActivityNotFoundException ex) {
+		    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+
 
 }
