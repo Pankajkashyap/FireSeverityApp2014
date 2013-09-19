@@ -9,8 +9,57 @@
     tools:context=".MainActivity" >
 
     <TextView
+        android:id="@+id/tvLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignLeft="@+id/spinnerFSA"
+        android:layout_alignParentTop="true"
+        android:text="Latitude" />
+    
+    <TextView
+        android:id="@+id/tvLongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvLatitude"
+        android:layout_below="@+id/tvLatitude"
+        android:text="Longitude" />
+    
+    <Button
+        android:id="@+id/btnfindLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/spinnerFSA"
+        android:layout_marginBottom="20dp"
+        android:text="@string/btn_start" />
+    
+    <ImageView
+        android:id="@+id/imageViewPhotoShot"
+        android:adjustViewBounds="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="300dp"
+        android:maxHeight="200dp"
+        android:layout_below="@+id/tvLongitude"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/img_noimage" />
+    
+    <TextView
+        android:id="@+id/textFSA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spinnerFSA"
+        android:layout_alignLeft="@+id/spinnerFSA"
+        android:text="@string/fire_severity_att_name" />
+    
+    <Spinner
+        android:id="@+id/spinnerFSA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnfindLocation"
+        android:layout_centerHorizontal="true"
+        android:entries="@array/fs_attribute_arrays"
+        android:prompt="@string/fire_severity_att_sel" />
 
 </RelativeLayout>
