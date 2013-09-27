@@ -42,7 +42,7 @@ public class GPSLocationCapture extends Service implements LocationListener {
         try {
             locationManager = (LocationManager) mContext
             		.getSystemService(Context.LOCATION_SERVICE);
-            
+            /*
             Criteria criteria = new Criteria();
             criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
             provider = locationManager.getBestProvider(criteria, false);
@@ -51,8 +51,9 @@ public class GPSLocationCapture extends Service implements LocationListener {
             if(location != null){
             	 this.isLocationAvailable = true;
             }
+            */
  
-            /*
+            
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
  
@@ -63,20 +64,6 @@ public class GPSLocationCapture extends Service implements LocationListener {
                 // no network provider is enabled
             } else {
                 this.isLocationAvailable = true;
-                if (isNetworkEnabled) {
-                    locationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    if (locationManager != null) {
-                        location = locationManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
-                }
                 if (isGPSEnabled) {
                     if (location == null) {
                         locationManager.requestLocationUpdates(
@@ -93,8 +80,22 @@ public class GPSLocationCapture extends Service implements LocationListener {
                         }
                     }
                 }
+                if (isNetworkEnabled) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    if (locationManager != null) {
+                        location = locationManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                        }
+                    }
+                }
             }
-            */
+            
  
         } catch (Exception e) {
             e.printStackTrace();

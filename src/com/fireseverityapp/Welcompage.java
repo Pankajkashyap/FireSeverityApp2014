@@ -1,5 +1,8 @@
 package com.fireseverityapp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fireseverityapp.MainActivity;
 
 import android.os.Bundle;
@@ -8,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +23,8 @@ public class Welcompage extends Activity {
 	
 	
 	private SharedPreferences mSettings;
+	
+	DatabaseHandler db;
 
 	TextView userNameField;
 	TextView userEmailField;
@@ -34,12 +40,14 @@ public class Welcompage extends Activity {
 		userNameField = (TextView)this.findViewById(R.id.userField);
 		userEmailField = (TextView)this.findViewById(R.id.userEmailField);
 		
-		boolean isExist = isUserExist();
+		boolean isExist = isUserExist(this);
 		// If User First Login
 		if(!isExist){
-			Intent i = new Intent(this,RegisterActivity.class);
+			//Intent i = new Intent(this,RegisterActivity.class);
+			Intent i = new Intent(this, RegistrationActivity.class);
 			this.startActivity(i);
 		}
+		
 		
 	}
 
@@ -52,6 +60,34 @@ public class Welcompage extends Activity {
 
 	}
 	
+	private boolean isUserExist(Context mContext){
+		boolean checked = false;
+		db = new DatabaseHandler(mContext);
+		
+		int count = db.getContactsCount();
+		List<Reg> contacts = new ArrayList<Reg>();
+
+		if(count > 0){
+			contacts = db.getAllContacts();
+			
+			// get the first contact info
+			Reg cn = contacts.get(0);
+			
+			userNameField.setText(cn.getName().toString());
+			userEmailField.setText(cn.get_email().toString());
+			
+			String log = "Id: " + cn.getID() + " ,Name: " + cn.getName()
+					+ " ,email: " + cn.get_email() + " ,org: " + cn.get_org()
+					+ " ,desig: " + cn.get_desig();
+			Log.d("Name: ", log);
+			
+			checked = true;
+		}
+
+		return checked;
+	}
+	
+	/*
 	private boolean isUserExist(){
 		boolean checked = false;
 		
@@ -67,6 +103,7 @@ public class Welcompage extends Activity {
 		
 		return checked;
 	}
+	*/
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,6 +118,7 @@ public class Welcompage extends Activity {
 	}
 	
 	public void clearUser(View v){
+		/*
 		Editor preEditor = mSettings.edit();
 		preEditor.remove(RegisterActivity.USER_NAME);
 		preEditor.remove(RegisterActivity.USER_EMAIL);
@@ -88,8 +126,9 @@ public class Welcompage extends Activity {
 		preEditor.commit();
 		
 		String testing = mSettings.getString(RegisterActivity.USER_NAME, null);
-		System.out.println("Testing Name========>"+testing);
+		*/
+		db.deleteTable();
+		
 	}
-
-
+	
 }

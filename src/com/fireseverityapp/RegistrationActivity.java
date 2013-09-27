@@ -22,8 +22,6 @@ public class RegistrationActivity extends Activity {
 	DatabaseHandler db;
 	private final int PLEASE_WAIT = 1;
 
-	private Handler mHandler;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,6 +32,7 @@ public class RegistrationActivity extends Activity {
 		email = (EditText) findViewById(R.id.tv_Email);
 		submit = (Button) findViewById(R.id.btn_Submit);
 		db = new DatabaseHandler(this);
+		db.getWritableDatabase();
 
 		// reg_name=name.getText().toString();
 
@@ -42,7 +41,7 @@ public class RegistrationActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				addUser();
-				Intent i=new Intent(RegistrationActivity.this,wellcome.class);
+				Intent i=new Intent(RegistrationActivity.this,Welcompage.class);
 				startActivity(i);
 			}
 		});
@@ -61,6 +60,7 @@ public class RegistrationActivity extends Activity {
 	public void addUser() {
 		
 		Log.d("Insert: ", "Inserting ..");
+		// Reg structure: Name, Organization, Designation, Email
 		db.addContact(new Reg(name.getText().toString(),organisation.getText().toString(),designation.getText().toString(),email.getText().toString()));
 		
 		

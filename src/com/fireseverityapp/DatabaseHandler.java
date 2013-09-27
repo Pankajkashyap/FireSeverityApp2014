@@ -14,7 +14,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	// Database Name
 	private static final String DATABASE_NAME = "FireSeverityLevel";
@@ -51,6 +51,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Create tables again
 		onCreate(db);
 	}
+	
+	public void deleteTable(){
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+		onCreate(db);
+	}
 
 	/**
 	 * All CRUD(Create, Read, Update, Delete) Operations
@@ -67,7 +73,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		// Inserting Rows
 		db.insert(TABLE_NAME, null, values);
-		Log.v("fdgdfdfdf", ""+values);
 		db.close(); // Closing database connection
 	}
 
@@ -86,7 +91,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// return contact
 		return contact;
 	}
-
+	
 	// Getting All Contacts
 	public List<Reg> getAllContacts() {
 		List<Reg> contactList = new ArrayList<Reg>();
@@ -113,7 +118,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// return contact list
 		return contactList;
 	}
-
+	
 	// Updating single contact
 	public int updateContact(Reg contact) {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -136,13 +141,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Getting contacts Count
 	public int getContactsCount() {
+		int count = 0;
 		String countQuery = "SELECT  * FROM " + TABLE_NAME;
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.rawQuery(countQuery, null);
+		count = cursor.getCount();
 		cursor.close();
 
 		// return count
-		return cursor.getCount();
+		return count;
 	}
 
 }

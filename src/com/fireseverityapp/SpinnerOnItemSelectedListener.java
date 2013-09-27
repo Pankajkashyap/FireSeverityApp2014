@@ -10,7 +10,9 @@ public class SpinnerOnItemSelectedListener implements OnItemSelectedListener{
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos,
 			long id) {
-		Toast.makeText(parent.getContext(), "Selected Attribute:"+ parent.getItemAtPosition(pos).toString(), Toast.LENGTH_SHORT).show();
+		String attitude = parent.getItemAtPosition(pos).toString();
+		Toast.makeText(parent.getContext(), "Selected Attribute:"+ attitude, Toast.LENGTH_SHORT).show();
+		MainActivity.FIRE_LEVEL_ATTRIBUTE = attitude;
 	}
 
 	@Override
