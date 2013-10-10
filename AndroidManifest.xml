@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.fireseverityapp.Welcompage"
+            android:name="com.fireseverityapp.Welcomepage"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,14 +41,11 @@
             android:screenOrientation="nosensor" >
         </activity>
 
-        <uses-library android:name="com.google.android.maps" />
 
         <activity
             android:name="com.fireseverityapp.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
-        
-        
         <activity
             android:name="com.fireseverityapp.RegistrationActivity"
             android:label="@string/app_name" >
@@ -57,8 +54,23 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-         </activity>
-        
+        </activity>
+        <activity
+            android:name="com.fireseverityapp.About"
+            android:label="@string/title_activity_about" >
+        </activity>
+        <activity
+            android:name="com.fireseverityapp.Usermanual"
+            android:label="@string/title_activity_usermanual" >
+        </activity>
+        <activity
+            android:name="com.fireseverityapp.About2"
+            android:label="@string/title_activity_about" >
+        </activity>
+        <activity
+            android:name="com.fireseverityapp.Usermanual2"
+            android:label="@string/title_activity_usermanual2" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
