@@ -41,7 +41,7 @@ public class ErrorPage extends Activity {
 			           public void onClick(DialogInterface dialog, int id) {
 			        	   //Forward back to Welcome page			              
 			        	   Intent intent = new Intent();
-			               intent.setClass(ErrorPage.this, Welcompage.class);
+			               intent.setClass(ErrorPage.this, Welcomepage.class);
 			               startActivity(intent);
 			               ErrorPage.this.finish();
 

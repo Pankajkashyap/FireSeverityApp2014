@@ -1,24 +1,23 @@
 package com.fireseverityapp;
 
-import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.fireseverityapp.R;
+import com.fireseverityapp.mail.MailAccount;
+
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentValues;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Base64;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,51 +28,117 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class MainActivity extends Activity {
 	
 	final int CAM_RESULT = 333333;
 	static String FIRE_LEVEL_ATTRIBUTE = null;
 	
-	//private SharedPreferences mSettings;
-
-	//ErrorCode
-	String camCanceled = "CAM_CANCELED";
-	
+	private Handler handler= new Handler();
+		
 	TextView latitude;
 	TextView longitude;
 	Button btnShow;
 	ImageView imgPhoto;
 	GPSLocationCapture gpsLocation;
 	Spinner spinnerFSA;
-	Content emailContent = null;
 	
 	Context mContext = this;
 	
 	DatabaseHandler db;
+	Reg reg = null;
+	
+	//ErrorCode
+	String camCanceled = "CAM_CANCELED";
+	//Email Details
+	String tmppath = null; // Photo path
+	String emailSenderId = null;
+	String emailSenderPWD = null;
+	String emailReceiver = null;
+	String emailSubject = null;
+	//Notification msg
+	String notificationMsg = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		//For fully exit application
+		TerminateActivity.addActivity(this);
+		
+		// Initial Email Account Info - add by Ling An - 17-10-2013
+		MailAccount mailAccount = new MailAccount();
+		emailSenderId = mailAccount.getAccountID();
+		emailSenderPWD = mailAccount.getPassword();
+		emailReceiver = mailAccount.getReceiverEmail();
+		emailSubject = mailAccount.getSubject();
+
 		imgPhoto = (ImageView)this.findViewById(R.id.imageViewPhotoShot);
+		reg = (Reg) this.getIntent().getSerializableExtra("Reg");
+		// TODO: should fixed by error msg or direct error page
+		if(reg == null){
+			Toast.makeText(mContext, "Data error, cannot read user details!", Toast.LENGTH_SHORT).show();
+			finish();
+		}
 				
 		btnShow = (Button) findViewById(R.id.btnfindLocation);
+		
+		startCamera();
+		
 		btnShow.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				if(emailContent != null){
-					sendEmail();
+				if(tmppath != null){
+					
+					if (Utills.isNetworkconn(getApplicationContext())) {
+						
+						final ProgressDialog pDialog = new ProgressDialog(mContext);
+						pDialog.setMessage("Sending Email...");
+						pDialog.setCancelable(false);
+						pDialog.show();
+
+						Toast.makeText(MainActivity.this, "Sending Email from Gmail Sender...",
+								Toast.LENGTH_LONG).show();
+						
+						new AsyncTask<Void, Void, Void>(){
+
+							@Override
+							protected Void doInBackground(Void... params) {
+								sendEmailFromGmail();
+								return null;
+							}
+							@Override
+							protected void onPostExecute(Void result){
+								pDialog.dismiss();
+								directToNotificationPage();
+							}
+							
+						}.execute();
+					}
+
+					else {
+						saveDBWithoutSend();
+						directToNotificationPage();
+					}
+					
+					
 				}else{
 					Toast.makeText(mContext, "Data error, cannot send email!", Toast.LENGTH_SHORT).show();
 				}
 				
 			}
+
 		});
 		
-		startCamera();
 		
+	}
+	
+	public void directToNotificationPage(){
+		Intent i = new Intent(this,NotificationActivity.class);
+		i.putExtra("noticeMsg", notificationMsg);
+		this.startActivity(i);
 	}
 	
 	public void listenerOnSpinner(){
@@ -127,14 +192,24 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int reqCode, int resCode, Intent data){
 		if(reqCode == CAM_RESULT && resCode == RESULT_OK){
-			Uri uri = data.getData();
-			Log.e("uri", uri.toString());
+			String[] proj = { MediaStore.Images.Media.DATA };
 			
-			Bitmap pic = (Bitmap)data.getExtras().get("data");
-			imgPhoto.setImageBitmap(pic);
+			Bitmap pic = null;
+			
+			if(data != null){
+				Uri contentUri = data.getData();
+				Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+			    if(cursor.moveToFirst()){;
+			       int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			       tmppath = cursor.getString(column_index);
+			    }
+				Log.e("Camera photo:path", "" + tmppath);
+				pic = (Bitmap)data.getExtras().get("data");
+				imgPhoto.setImageBitmap(pic);
+			}
+			
 			getLocation();
 			listenerOnSpinner();
-			//setEmailContent(data);
 			
 		}
 		if(resCode == Activity.RESULT_CANCELED){
@@ -144,71 +219,114 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	
-	@SuppressLint("SimpleDateFormat")
-	public void setEmailContent(Intent data){
-		
-		Bitmap pic = (Bitmap)data.getExtras().get("data");
-        
-		// convert Bitmap into byte
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        pic.compress(Bitmap.CompressFormat.JPEG, 100, stream );
-        byte bytes[] = stream.toByteArray();
-        
-        // convert byte into base64
-        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT); 
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyHHmm");
-        String dateStamp = sdf.format(new Date());
-        
-        emailContent.setImgBase64(base64);
-        emailContent.setDateStamp(dateStamp);
-        emailContent.setLatitude(latitude.getText().toString());
-        emailContent.setLongitude(longitude.getText().toString());
-        emailContent.setFireLevelAttitude(FIRE_LEVEL_ATTRIBUTE);
-        
-	}
-	
 	/*
-	public void saveImageToDB(Intent data){
-		db = new DatabaseHandler(this);
-		
-		Bitmap pic = (Bitmap)data.getExtras().get("data");
-        
-		// convert Bitmap into byte
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        pic.compress(Bitmap.CompressFormat.JPEG, 100, stream );
-        byte bytes[] = stream.toByteArray();
-        
-        // convert byte into base64
-        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT); 
-        
-        ContentValues cv = new ContentValues();
-        cv.put("imgBase64", base64);
-		
-        long longNumber = db.insert("EmailContent", "", cv);
+	 * Data table structure
+		String imagepath, 
+		String priority,
+		String latitude, 
+		String longitude,
+		String email,
+		String name,
+		String organization,
+		String desig ) {
+	*/
+	public void saveDBWithoutSend() {
+		DataBase DB = new DataBase(getApplicationContext());
+		try {
+			DB.open();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DB.insert__loc(
+				tmppath, 
+				FIRE_LEVEL_ATTRIBUTE, 
+				latitude.getText().toString(),
+				longitude.getText().toString(),
+				reg.get_email(),
+				reg.getName(),
+				reg.get_org(),
+				reg.get_desig()
+				);
+		DB.close();
+		notificationMsg = "Information has been stored in database, will be sent when in network connection!";
+		Toast.makeText(MainActivity.this, notificationMsg,
+				Toast.LENGTH_LONG).show();
 	}
 
-	*/
 	
-	public void sendEmail(){
-		
-		byte bytes[] = Base64.decode(emailContent.getImgBase64(), Base64.DEFAULT);
-		Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-		
-		Intent mailIntent = new Intent(Intent.ACTION_SEND);
-			mailIntent.setType("application/image");
-			mailIntent.putExtra(Intent.EXTRA_EMAIL  , new String[]{"snowneco@gmail.com"});
-			mailIntent.putExtra(Intent.EXTRA_SUBJECT, "Fire Severity Level App");
-			mailIntent.putExtra(Intent.EXTRA_TEXT   , "Bush Fire reporter, /n Latitude:"+ emailContent.getLatitude() + "/n Longitude:"+ emailContent.getLongitude());
-			mailIntent.putExtra(Intent.EXTRA_STREAM, bytes);
-		
+	public void sendEmailFromGmail(){
+		GMailSender mailsender = new GMailSender(emailSenderId, emailSenderPWD);
+
+		String[] toArr = {emailReceiver};
+		mailsender.set_to(toArr);
+		mailsender.set_from(emailSenderId);
+		mailsender.set_subject(emailSubject + " From " + reg.getName());
+		mailsender
+				.setBody("Data Sent From "
+						+ reg.getName()
+						+ "\nLatitude = "
+						+ latitude.getText().toString()
+						+ "\nLongitude = "
+						+ longitude.getText().toString()
+						+ "\nFire Level Severity Attribute = "
+						+ FIRE_LEVEL_ATTRIBUTE
+						+ "\nOrganisation = "
+						+ reg.get_org()
+						+ " \nDesignation = "
+						+ reg.get_desig()
+						+ " \nEmail_id = "
+						+ reg.get_email());
+
 		try {
-		    startActivity(Intent.createChooser(mailIntent, "Choose an Email client :"));
-		} catch (android.content.ActivityNotFoundException ex) {
-		    Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+			try {
+				
+				if (!(tmppath.equalsIgnoreCase(""))) {
+					mailsender.addAttachment(tmppath);
+				}
+				
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			if (mailsender.send()) {
+				handler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						notificationMsg = "Email was sent successfully.";
+						Toast.makeText(
+								MainActivity.this,
+								notificationMsg,
+								Toast.LENGTH_LONG)
+								.show();
+
+					}
+
+				});
+			} else {
+
+				handler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						notificationMsg = "Email was not sent.";
+						Toast.makeText(
+								MainActivity.this,
+								"Email was not sent.",
+								Toast.LENGTH_LONG)
+								.show();
+
+					}
+
+				});
+
+			}
+		} catch (Exception e) {
+
+			 Log.e("MailApp",""+e.getMessage());
 		}
-		
 	}
 
 }

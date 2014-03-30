@@ -34,7 +34,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/spinnerFSA"
         android:layout_marginBottom="20dp"
-        android:text="@string/btn_start" />
+        android:textColor="@color/white"
+        android:text="@string/btn_send" />
     
     <ImageView
         android:id="@+id/imageViewPhotoShot"

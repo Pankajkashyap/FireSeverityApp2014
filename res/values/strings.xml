@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">Fire Severity Level</string>
+    <string name="str_warning_1">1. You will first take a photo of the area affected by fire</string>
+    <string name="str_warning_2">2. then you will be asked to describe the severity.</string>
     <string name="action_settings">Settings</string>
     <string name="title_user_registration_page">User Registration</string>
     <string name="title_welcomepage">Fire Severity Home Page</string>
@@ -10,25 +12,24 @@
     <string name="btn_submit">Submit</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_register">Register</string>
+    <string name="btn_finish">Finish</string>
+    <string name="btn_send">Send Email</string>
     <string name="reg_user_name">User Name:</string>
     <string name="reg_email">Email:</string>
     <string name="reg_phone">Phone No:</string>
     <string name="fire_severity_att_sel">Choose an Attribute</string>
     <string name="fire_severity_att_name">Fire Severity Attribute:</string>
-    
-<!--     <string name="app_name">Fire_Severity_level</string> -->
+
+    <!-- <string name="app_name">Fire_Severity_level</string> -->
     <string name="Fire_Severity_level">FIRE SEVERITY LEVEL</string>
- 	<string name="menu_settings">Settings</string>
+    <string name="menu_settings">Settings</string>
     <string name="Enter_Credentials">Enter Credentials</string>
     <string name="name">Name</string>
     <string name="organisation">Organisation</string>
     <string name="Designation">Designation</string>
     <string name="Email">Email</string>
     <string name="Submit">Submit</string>
-    
-    
-    
-    
+
     <string-array name="fs_attribute_arrays">
         <item>Low</item>
         <item>Medium</item>
@@ -54,6 +55,60 @@
 
     <string name="title_activity_register">User Registration</string>
     <string name="hello_world">Hello world!</string>
-   
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_usermanual">User Manual Page1</string>
+
+    <!-- String for Welcome Page Start -->
+	<string name="welcome_text_good_day">Good Day!</string>
+    <string name="welcome_button_start">Start</string>
+    <string name="welcome_button_about">About</string>
+    <string name="welcome_button_usermanual">User Manual</string>
+    <string name="welcome_button_exit">Exit</string>
+
+    <!-- ABOUT -->
+
+    <string name="aboutl1">Fire Severity Level</string>
+    <string name="aboutl2">Developers:</string>
+    <string name="aboutl3">Ling An Lin (S250401@cdu.edu.au)</string>
+    <string name="aboutl4">Arcelie Cahigus Go (S252886@cdu.edu.au)</string>
+    <string name="aboutl5">Kanwarpreet Singh (S258637@cdu.edu.au)</string>
+    <string name="aboutl6">Pankaj Kaskyap (S256980@cdu.edu.au)</string>
+    <string name="aboutl7">Professor: Dr. Peter Shaw</string>
+    <string name="aboutl8">Client: Dr. Andrew Edwards</string>
+    <string name="aboutl9">Copyright© 2013.Charles Darwin University.</string>
+    <string name="aboutl10">All Rights Reserved.</string>
+
+    <!-- USER MANUAL -->
+
+    <string name="inst"> INSTRUCTIONS</string>
+    <string name="uml1">1.Download "Fire Severity Level " application </string>
+    <string name="uml2">-- TURN ON YOUR GPS --</string>
+    <string name="uml3">2.Install and open the application</string>
+    <string name="uml4">3.Register your account for the first time</string>
+    <string name="uml5">-- Credentials: Name, Organization, Designation and Email -- </string>
+    <string name="uml6">4.Click “Start” to start camera, it will go to main activity to save image</string>
+    <string name="uml7">5.Choose the fire severity attribute</string>
+    <string name="uml8">-- Options: Low, Moderate, High and Extreme --</string>
+    <string name="uml9">6.Click “Send”</string>
+    <string name="uml10">Additional Information:</string>
+    <string name="uml11">-- Once the information was sent, a notification will appear “ Fire Case Sent” OR “Failed Sending Case” --</string>
+    <string name="uml12">In the same page there are three available buttons:</string>
+    <string name="uml13">“Send Another Fire Case”</string>
+    <string name="uml14">“Resend”</string>
+    <string name="uml15">“Finish”</string>
+    <string name="uml16">-- When mobile is out of range --</string>
+    <string name="uml17">User will manually fill the information such as address and fire severity attributes and click “send”  </string>
+    <string name="uml18">Data will be stored temporarily in the phone memory and once mobile device is in network range, the information will be send automatically to the destination source.  </string>
+
+    <!-- String for Welcome Page End -->
+    
+    <!-- String for Notification Page Start -->
+    <string name="notif_btn_send_another_case">Send Another Fire Case</string>
+    <string name="notif_thanks_for_using">Thank you for using Fire Severity Level Application</string>
+    
+    <!-- String for Notification Page End -->  
+
+    <string name="title_activity_usermanual2">User Manual Page2</string>
+    <string name="title_activity_notification">NotificationActivity</string>
 
 </resources>

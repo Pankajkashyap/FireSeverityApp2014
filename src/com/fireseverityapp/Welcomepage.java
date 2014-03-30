@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fireseverityapp.MainActivity;
+import com.fireseverityapp.TerminateActivity;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -19,7 +25,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
-public class Welcompage extends Activity {
+public class Welcomepage extends Activity {
 	
 	
 	private SharedPreferences mSettings;
@@ -27,18 +33,23 @@ public class Welcompage extends Activity {
 	DatabaseHandler db;
 
 	TextView userNameField;
-	TextView userEmailField;
+	//TextView userEmailField;
 	Button btnClear;
+	Reg cn = new Reg();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_welcompage);
+		
+		//For fully exit application
+		TerminateActivity.addActivity(this);
+
+		setContentView(R.layout.activity_welcomepage);
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
 		userNameField = (TextView)this.findViewById(R.id.userField);
-		userEmailField = (TextView)this.findViewById(R.id.userEmailField);
+		//userEmailField = (TextView)this.findViewById(R.id.regEmailField);
 		
 		boolean isExist = isUserExist(this);
 		// If User First Login
@@ -54,6 +65,8 @@ public class Welcompage extends Activity {
 	/**
 	 * Set up the {@link android.app.ActionBar}.
 	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@SuppressLint("NewApi")
 	private void setupActionBar() {
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,10 +84,10 @@ public class Welcompage extends Activity {
 			contacts = db.getAllContacts();
 			
 			// get the first contact info
-			Reg cn = contacts.get(0);
+			cn = contacts.get(0);
 			
 			userNameField.setText(cn.getName().toString());
-			userEmailField.setText(cn.get_email().toString());
+			//userEmailField.setText(cn.get_email().toString());
 			
 			String log = "Id: " + cn.getID() + " ,Name: " + cn.getName()
 					+ " ,email: " + cn.get_email() + " ,org: " + cn.get_org()
@@ -108,15 +121,51 @@ public class Welcompage extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.welcompage, menu);
+		getMenuInflater().inflate(R.menu.welcomepage, menu);
 		return true;
 	}
 
 	public void enterApp(View v){
-		Intent i = new Intent(this,MainActivity.class);
-		this.startActivity(i);
+		
+		AlertDialog alertDialog = new AlertDialog.Builder(Welcomepage.this).create();
+		
+		alertDialog.setMessage("Photo required, please take a bush fire image!");
+		alertDialog.setCancelable(false);
+		alertDialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Welcomepage.this.enterMainActivity();
+			}
+
+		});
+		alertDialog.show();
+
 	}
 	
+	public void enterMainActivity(){
+		Intent i = new Intent(this,MainActivity.class);
+		if(cn != null){
+			Bundle bundle = new Bundle();
+			bundle.putSerializable("Reg", cn);
+			i.putExtras(bundle);
+		}
+		this.startActivity(i);
+	}
+
+	public void enterUsermanual(View v){
+		Intent i = new Intent(this,Usermanual.class);
+		this.startActivity(i);
+	}
+	public void enterAbout(View v){
+		Intent i = new Intent(this,About.class);
+		this.startActivity(i);
+	}
+	public void enterExit(View v){
+		TerminateActivity.onTerminate();
+		//this.clearUser(v);
+	}
+
 	public void clearUser(View v){
 		/*
 		Editor preEditor = mSettings.edit();

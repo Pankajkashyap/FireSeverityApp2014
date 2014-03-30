@@ -114,7 +114,7 @@ public class RegisterActivity extends Activity {
 	}
 	
 	public void gotoWelcomePage(){
-		Intent i = new Intent(this,Welcompage.class);
+		Intent i = new Intent(this,Welcomepage.class);
 		this.startActivity(i);
 	}
 	

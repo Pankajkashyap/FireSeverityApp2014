@@ -1,7 +1,13 @@
 package com.fireseverityapp;
 
-public class Reg {
+import java.io.Serializable;
 
+public class Reg implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// private variables
 	int _id;
 	String _name;
@@ -54,7 +60,7 @@ public class Reg {
 
 	// getting name
 	public String getName() {
-		return this._name;
+		return _name;
 	}
 
 	// setting name

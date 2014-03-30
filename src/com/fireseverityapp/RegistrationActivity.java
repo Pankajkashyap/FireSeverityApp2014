@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -26,6 +27,10 @@ public class RegistrationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_registration);
+		
+		//For fully exit application
+		TerminateActivity.addActivity(this);
+
 		name = (EditText) findViewById(R.id.tv_name);
 		organisation = (EditText) findViewById(R.id.tv_organisation);
 		designation = (EditText) findViewById(R.id.tv_Designation);
@@ -40,13 +45,46 @@ public class RegistrationActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				addUser();
-				Intent i=new Intent(RegistrationActivity.this,Welcompage.class);
-				startActivity(i);
+				
+				final AlertDialog alertDialog = new AlertDialog.Builder(RegistrationActivity.this).create();
+				
+				new AsyncTask<Void, Void, Void>(){
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						addUser();
+						return null;
+					}
+					@Override
+					protected void onPostExecute(Void result){
+						alertDialog.setMessage("Registation Successfully!!");
+						alertDialog.setCancelable(false);
+						alertDialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Intent i=new Intent(RegistrationActivity.this,Welcomepage.class);
+								startActivity(i);
+							}
+
+						});
+						alertDialog.show();
+					}
+					
+				}.execute();
+				
 			}
 		});
 
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		finish();
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,24 +117,4 @@ public class RegistrationActivity extends Activity {
 	}
 	
 	
-	
-	/*private void inFo(String message) {
-		String help = message;
-		AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
-		builder.setMessage(help).setCancelable(true);
-		builder.setTitle("xyz");
-		builder.setIcon(R.drawable.ic_launcher);
-		builder.setCancelable(true);
-		builder.setIcon(null);
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-
-		});
-		AlertDialog alert = builder.create();
-		alert.show();
-	}
-	*/
 }

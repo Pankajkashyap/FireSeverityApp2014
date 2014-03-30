@@ -47,13 +47,14 @@ public class DatabaseEmailContent extends SQLiteOpenHelper{
 		
 	}
 
-	// Deleting content by date stamp
+	/* Deleting content by date stamp
 	public void deleteContentByDateStamp(Content content) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_NAME, KEY_DATE_STAMP + " = ?",
 				new String[] { String.valueOf(content.dateStamp) });
 		db.close();
 	}
+	*/
 	
 	// Getting contacts Count
 	public int getContentCount() {

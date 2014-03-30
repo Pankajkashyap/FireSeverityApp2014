@@ -8,14 +8,16 @@
     <color name="red">#ff0000</color>
     <color name="green">#00ff00</color>
     <color name="blue">#0000ff</color>
-    <color name="username_text">#ffffffff</color>
-    <color name="username_edit">#ff000000</color>
-    <color name="password_text">#ffffffff</color>
-    <color name="password_edit">#ff000000</color>
-    <color name="ssl_text_label">#ffffffff</color>
-    <color name="ssl_text_value">#ffffffff</color>
-    <color name="geolocation_permissions_prompt_background">#ffdddddd</color>
+    <color name="username_text">#FFFFFF</color>
+    <color name="username_edit">#ff0000</color>
+    <color name="password_text">#ffffff</color>
+    <color name="password_edit">#ff0000</color>
+    <color name="ssl_text_label">#ffffff</color>
+    <color name="ssl_text_value">#ffffff</color>
+    <color name="geolocation_permissions_prompt_background">#ffdddd</color>
      <color name="calculator_output">#00ff00</color>
+     <color name="orange">#DEB887</color>
+     
 
 
 </resources>
